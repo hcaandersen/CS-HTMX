@@ -1,0 +1,9 @@
+{
+    "name": "Hello World PWA",
+    "short_name": "HelloPWA",
+    "start_url": "/CS-HTMX/index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000"
+  }
+  

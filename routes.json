@@ -1,0 +1,6 @@
+{
+    "todo-form": "() => todoForm.html",
+    "todo-list": "todoList@rpc.jss => todoList.html",
+    "todo-add": "todoAdd@rpc.jss => todoAdd.html",
+    "todo-delete": "todoDelete@rpc.jss"
+}

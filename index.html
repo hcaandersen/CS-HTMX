@@ -1,0 +1,19 @@
+<head>
+    <title>Todo List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script src="cs-htmx.js"></script>
+</head>
+
+<body>
+    <h1>Todo List</h1>
+
+    <div hx-get="todo-form" hx-trigger="load" id="todo-form-container"></div>
+
+    <div hx-get="todo-list" hx-trigger="load"></div>
+
+</body>
+
+</html>
