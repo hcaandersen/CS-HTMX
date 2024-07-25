@@ -52,11 +52,11 @@ if (typeof window !== 'undefined') {
                     throw new Error('Failed to fetch routes file');
                 }
                 const routes = await response.json();
-                Object.keys(routes).forEach(r => {
-                    let routeInfo = routes[r];
+                Object.keys(routes).forEach(htmxPath => {
+                    let routeInfo = routes[htmxPath];
                     if (typeof routeInfo === 'string')
                         routeInfo = this.parseRouteString(routeInfo);
-                    this.addRoute(r, routeInfo.rpcPath, routeInfo.rpcFunction, routeInfo.template);
+                    this.addRoute(htmxPath, routeInfo.rpcPath, routeInfo.rpcFunction, routeInfo.template);
                 });
             } catch (error) {
                 console.error('Error loading routes from file:', error);
@@ -93,19 +93,17 @@ if (typeof window !== 'undefined') {
             if (!route)
                 return new Response('Not Found', { status: 404 });
 
-            const { templatePath, rpcPath, rpcFunction } = route;
-
             try {
                 let data = null;
-                if (rpcPath && rpcFunction) {
+                if (route.rpcPath && route.rpcFunction) {
                     let params = await this.getHtmxParameters(event, url);
-                    data = await this.invokeJsonRPC(rpcPath, rpcFunction, params);
+                    data = await this.invokeJsonRPC(route.rpcFunction, params);
                     if (data === null)
                         return new Response(null, { status: 200 });
                 }
-                if (!this.templates[templatePath])
-                    this.templates[templatePath] = await this.getTemplate(templatePath);
-                const html = this.templates[templatePath](data);
+                if (!this.templates[route.templatePath])
+                    this.templates[route.templatePath] = await this.getTemplate(route.templatePath);
+                const html = this.templates[route.templatePath](data);
                 return new Response(html, { headers: { 'Content-Type': 'text/html' } });
             } catch (error) {
                 console.error('Error handling request:', error);
@@ -169,7 +167,37 @@ if (typeof window !== 'undefined') {
                 await this.loadPartial(partial, `templates/${partial}.html`);
         }
 
-        async invokeJsonRPC(rpcPath, method, ...params) {
+        async invokeJsonRPC(method, params) {
+            try {
+                const response = await fetch('cs-html.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        method: method,
+                        params: params,
+                        id: 1,
+                        jsonrpc: "2.0"
+                    })
+                });
+        
+                if (!response.ok)
+                    throw new Error('Network response was not ok');
+        
+                const responseData = await response.json();
+        
+                if (responseData.error)
+                    throw new Error(responseData.error);
+        
+                return responseData.result;
+            } catch (error) {
+                console.error('Error calling JSON-RPC:', error);
+                throw error;
+            }
+        }
+        
+        async invokeJsonRPC_JSS(rpcPath, method, ...params) {
 
             try {
                 const response = await fetch(rpcPath, {

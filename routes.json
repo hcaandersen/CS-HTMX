@@ -1,6 +1,6 @@
 {
     "todo-form": "() => todoForm.html",
-    "todo-list": "todoList@rpc.jss => todoList.html",
-    "todo-add": "todoAdd@rpc.jss => todoAdd.html",
-    "todo-delete": "todoDelete@rpc.jss"
+    "todo-list": "todoList@api/todo.php => todoList.html",
+    "todo-add": "todoAdd@api/todo.php => todoAdd.html",
+    "todo-delete": "todoDelete@api/todo.php"
 }
